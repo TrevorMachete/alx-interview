@@ -1,12 +1,19 @@
+import math
+
+def combination(n, r):
+    return int((math.factorial(n)) / ((math.factorial(r)) * math.factorial(n - r)))
+
 def pascal_triangle(n):
     if n <= 0:
         return []
-    triangle = [[1]]
-    for i in range(1, n):
-        row = [1]
-        last_row = triangle[i - 1]
-        for j in range(1, i):
-            row.append(last_row[j - 1] + last_row[j])
-        row.append(1)
-        triangle.append(row)
-    return triangle
+
+    result = []
+    for count in range(n):
+        row = []
+        for element in range(count + 1):
+            row.append(combination(count, element))
+        result.append(row)
+
+    return result
+for row in pascal_triangle(5):
+    print(row)
