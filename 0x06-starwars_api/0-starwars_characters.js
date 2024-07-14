@@ -3,25 +3,21 @@
 const request = require('request');
 
 const movieId = process.argv[2];
-const apiUrl = `https://swapi.dev/api/films/${movieId}/`;
 
-request(apiUrl, (error, response, body) => {
-  if (!error && response.statusCode === 200) {
-    const film = JSON.parse(body);
-    const characterUrls = film.characters;
-    
-    characterUrls.forEach(characterUrl => {
-      request(characterUrl, (error, response, body) => {
-        if (!error && response.statusCode === 200) {
-          const character = JSON.parse(body);
-          console.log(character.name);
-        } else {
-          console.error('Error retrieving character information:', error);
-        }
+const url = `https://swapi-api.hbtn.io/api/films/${movieId}`;
+
+request(url, async (err, res, body) => {
+  err && console.log(err);
+
+  const charactersArray = (JSON.parse(res.body).characters);
+  for (const character of charactersArray) {
+    await new Promise((resolve, reject) => {
+      request(character, (err, res, body) => {
+        err && console.log(err);
+
+        console.log(JSON.parse(body).name);
+        resolve();
       });
     });
-  } else {
-    console.error('Error retrieving film information:', error);
   }
 });
-
